@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Kalkulator Nilai Akhir</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.25);
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-box {
+            margin-top: 25px;
+            background: #e9ecef;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .warning {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .success {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Simulasi Kalkulator Nilai Akhir</h2>
+    <p style="text-align: center; color: #666; font-size: 14px;">Sesuaikan komponen, bobot (dalam %), dan nilai sesuai keinginan Anda.</p>
+
+    <table id="gradeTable">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Komponen Penilaian</th>
+                <th style="width: 20%;">Bobot (%)</th>
+                <th style="width: 25%;">Nilai (0-100)</th>
+                <th style="width: 20%; text-align: center;">Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data awal diisi dari input Anda sebelumnya -->
+            <tr>
+                <td><input type="text" value="Aktivitas Partisipatif (Case Study)"></td>
+                <td><input type="number" class="weight" value="50" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="100" min="0" max="100" oninput="hitungTotal()"></td>
+                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Ujian Tengah Semester"></td>
+                <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="73" min="0" max="100" oninput="hitungTotal()"></td>
+                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Ujian Akhir Semester"></td>
+                <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="95" min="0" max="100" oninput="hitungTotal()"></td>
+                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Kuis"></td>
+                <td><input type="number" class="weight" value="30" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="65" min="0" max="100" oninput="hitungTotal()"></td>
+                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <button class="btn" onclick="tambahBaris()">+ Tambah Komponen</button>
+        <div id="statusBobot"></div>
+    </div>
+
+    <div class="summary-box">
+        <span>Total Nilai Akhir:</span>
+        <span id="finalScore" style="color: #007bff; font-size: 24px;">0.00</span>
+    </div>
+</div>
+
+<script>
+    function hitungTotal() {
+        const rows = document.querySelectorAll("#tableBody tr");
+        let totalNilaiAkhir = 0;
+        let totalBobot = 0;
+
+        rows.forEach(row => {
+            const weightInput = row.querySelector(".weight");
+            const scoreInput = row.querySelector(".score");
+
+            const weight = parseFloat(weightInput.value) || 0;
+            const score = parseFloat(scoreInput.value) || 0;
+
+            totalBobot += weight;
+            totalNilaiAkhir += (weight / 100) * score;
+        });
+
+        document.getElementById("finalScore").innerText = totalNilaiAkhir.toFixed(2);
+
+        const statusDiv = document.getElementById("statusBobot");
+        if (totalBobot === 100) {
+            statusDiv.innerHTML = `<span class="success">Total Bobot: ${totalBobot}% (Pas)</span>`;
+        } else {
+            statusDiv.innerHTML = `<span class="warning">Total Bobot: ${totalBobot}% (Idealnya 100%)</span>`;
+        }
+    }
+
+    function tambahBaris() {
+        const tbody = document.getElementById("tableBody");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td><input type="text" placeholder="Nama Komponen Baru"></td>
+            <td><input type="number" class="weight" value="0" min="0" max="100" oninput="hitungTotal()"></td>
+            <td><input type="number" class="score" value="0" min="0" max="100" oninput="hitungTotal()"></td>
+            <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
+        `;
+        tbody.appendChild(newRow);
+        hitungTotal();
+    }
+
+    function hapusBaris(button) {
+        const row = button.closest("tr");
+        row.remove();
+        hitungTotal();
+    }
+
+    // Jalankan perhitungan awal saat halaman dimuat
+    window.onload = hitungTotal;
+</script>
+
+</body>
+</html>
