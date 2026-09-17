@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Kalkulator Nilai Akhir</title>
+    <title>Simulasi Kalkulator Nilai Akhir & Huruf Mutu</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             background: #ffffff;
             padding: 25px;
@@ -76,69 +76,80 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .summary-box {
             margin-top: 25px;
             background: #e9ecef;
-            padding: 15px 20px;
+            padding: 20px;
             border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .summary-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 18px;
             font-weight: bold;
         }
+        .grade-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 20px;
+        }
         .warning {
             color: #dc3545;
             font-size: 14px;
-            margin-top: 5px;
         }
         .success {
             color: #28a745;
             font-size: 14px;
-            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Simulasi Kalkulator Nilai Akhir</h2>
-    <p style="text-align: center; color: #666; font-size: 14px;">Sesuaikan komponen, bobot (dalam %), dan nilai sesuai keinginan Anda.</p>
+    <h2>Simulasi Kalkulator Nilai Akhir & Konversi Huruf Mutu</h2>
+    <p style="text-align: center; color: #666; font-size: 14px;">Sesuaikan komponen, bobot (%), dan nilai untuk melihat hasil kalkulasi lengkap secara langsung.</p>
 
     <table id="gradeTable">
         <thead>
             <tr>
                 <th style="width: 35%;">Komponen Penilaian</th>
                 <th style="width: 20%;">Bobot (%)</th>
-                <th style="width: 25%;">Nilai (0-100)</th>
+                <th style="width: 25%;">Nilai (0-100+)</th>
                 <th style="width: 20%; text-align: center;">Aksi</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Data awal diisi dari input Anda sebelumnya -->
             <tr>
                 <td><input type="text" value="Aktivitas Partisipatif (Case Study)"></td>
                 <td><input type="number" class="weight" value="50" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="100" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="100" min="0" oninput="hitungTotal()"></td>
                 <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
             </tr>
             <tr>
                 <td><input type="text" value="Ujian Tengah Semester"></td>
                 <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="73" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="73" min="0" oninput="hitungTotal()"></td>
                 <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
             </tr>
             <tr>
                 <td><input type="text" value="Ujian Akhir Semester"></td>
                 <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="95" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="95" min="0" oninput="hitungTotal()"></td>
                 <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
             </tr>
             <tr>
                 <td><input type="text" value="Kuis"></td>
                 <td><input type="number" class="weight" value="30" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="65" min="0" max="100" oninput="hitungTotal()"></td>
+                <td><input type="number" class="score" value="65" min="0" oninput="hitungTotal()"></td>
                 <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
             </tr>
         </tbody>
@@ -150,12 +161,33 @@
     </div>
 
     <div class="summary-box">
-        <span>Total Nilai Akhir:</span>
-        <span id="finalScore" style="color: #007bff; font-size: 24px;">0.00</span>
+        <div class="summary-row">
+            <span>Total Nilai Akhir:</span>
+            <span id="finalScore" style="color: #007bff; font-size: 24px;">0.00</span>
+        </div>
+        <div class="summary-row" style="border-top: 1px solid #ccc; padding-top: 10px; font-size: 16px;">
+            <span>Predikat Huruf Mutu & Bobot:</span>
+            <div>
+                <span id="gradeLetter" class="grade-badge">-</span>
+                <span id="gradeDetail" style="margin-left: 10px; color: #555; font-weight: normal;">-</span>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    function getKonversiNilai(nilai) {
+        if (nilai >= 85) return { huruf: "A", bobot: "4,00", ket: "Sangat Baik / Istimewa" };
+        if (nilai >= 80) return { huruf: "A-", bobot: "3,70", ket: "" };
+        if (nilai >= 75) return { huruf: "B+", bobot: "3,30", ket: "" };
+        if (nilai >= 70) return { huruf: "B", bobot: "3,00", ket: "Baik" };
+        if (nilai >= 65) return { huruf: "B-", bobot: "2,70", ket: "" };
+        if (nilai >= 60) return { huruf: "C+", bobot: "2,30", ket: "" };
+        if (nilai >= 55) return { huruf: "C", bobot: "2,00", ket: "Cukup" };
+        if (nilai >= 40) return { huruf: "D", bobot: "1,00", ket: "Kurang" };
+        return { huruf: "E", bobot: "0,00", ket: "Gagal" };
+    }
+
     function hitungTotal() {
         const rows = document.querySelectorAll("#tableBody tr");
         let totalNilaiAkhir = 0;
@@ -172,8 +204,20 @@
             totalNilaiAkhir += (weight / 100) * score;
         });
 
+        // Tampilkan total nilai akhir
         document.getElementById("finalScore").innerText = totalNilaiAkhir.toFixed(2);
 
+        // Tentukan konversi huruf mutu dan bobot
+        const hasil = getKonversiNilai(totalNilaiAkhir);
+        document.getElementById("gradeLetter").innerText = hasil.huruf;
+        
+        let detailText = `Bobot ${hasil.bobot}`;
+        if (hasil.ket) {
+            detailText += ` (${hasil.ket})`;
+        }
+        document.getElementById("gradeDetail").innerText = detailText;
+
+        // Validasi status bobot
         const statusDiv = document.getElementById("statusBobot");
         if (totalBobot === 100) {
             statusDiv.innerHTML = `<span class="success">Total Bobot: ${totalBobot}% (Pas)</span>`;
@@ -188,7 +232,7 @@
         newRow.innerHTML = `
             <td><input type="text" placeholder="Nama Komponen Baru"></td>
             <td><input type="number" class="weight" value="0" min="0" max="100" oninput="hitungTotal()"></td>
-            <td><input type="number" class="score" value="0" min="0" max="100" oninput="hitungTotal()"></td>
+            <td><input type="number" class="score" value="0" min="0" oninput="hitungTotal()"></td>
             <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
         `;
         tbody.appendChild(newRow);
