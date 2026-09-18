@@ -1,252 +1,359 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Kalkulator Nilai Akhir & Huruf Mutu</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        h2 {
-            margin-top: 0;
-            color: #2c3e50;
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        input:focus {
-            border-color: #007bff;
-            outline: none;
-            box-shadow: 0 0 5px rgba(0,123,255,0.25);
-        }
-        .btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background-color: #218838;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .actions {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .summary-box {
-            margin-top: 25px;
-            background: #e9ecef;
-            padding: 20px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .grade-badge {
-            background-color: #007bff;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 20px;
-        }
-        .warning {
-            color: #dc3545;
-            font-size: 14px;
-        }
-        .success {
-            color: #28a745;
-            font-size: 14px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Nilai Akhir</title>
+<style>
+  :root{
+    --bg:#faf9f7;
+    --surface:#ffffff;
+    --ink:#1c1c1a;
+    --ink-soft:#6b6b66;
+    --line:#e6e4df;
+    --accent:#2f5d50;
+    --accent-soft:#e8efec;
+    --warn:#b3492f;
+    --warn-soft:#f6e9e5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:48px 20px;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+  }
+  header{
+    margin-bottom:36px;
+  }
+  h1{
+    font-size:28px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 6px;
+  }
+  header p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:15px;
+    max-width:52ch;
+    line-height:1.5;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:4px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  thead th{
+    text-align:left;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  thead th:nth-child(2),
+  thead th:nth-child(3){
+    width:110px;
+  }
+  thead th:last-child{
+    width:56px;
+  }
+  tbody tr{
+    border-bottom:1px solid var(--line);
+  }
+  tbody tr:last-child{
+    border-bottom:none;
+  }
+  td{
+    padding:8px 10px;
+    vertical-align:middle;
+  }
+  td:first-child{
+    padding-left:16px;
+  }
+  input[type="text"],
+  input[type="number"]{
+    width:100%;
+    border:none;
+    background:transparent;
+    font:inherit;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:14.5px;
+    color:var(--ink);
+    padding:8px 6px;
+    border-radius:3px;
+  }
+  input[type="number"]{
+    text-align:left;
+    -moz-appearance:textfield;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+  }
+  input:hover{
+    background:#f4f3f0;
+  }
+  input:focus{
+    outline:none;
+    background:#fff;
+    box-shadow:0 0 0 1.5px var(--accent);
+  }
+  .del{
+    width:28px;
+    height:28px;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    border-radius:50%;
+    cursor:pointer;
+    font-size:15px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto;
+    transition:background .12s, color .12s;
+  }
+  .del:hover{
+    background:var(--warn-soft);
+    color:var(--warn);
+  }
+  .toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    border-top:1px solid var(--line);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .add-btn{
+    border:none;
+    background:none;
+    color:var(--accent);
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    padding:6px 4px;
+  }
+  .add-btn:hover{
+    text-decoration:underline;
+  }
+  #statusBobot{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  #statusBobot.warn{
+    color:var(--warn);
+  }
+  #statusBobot.ok{
+    color:var(--accent);
+  }
+  .summary{
+    margin-top:18px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .summary-score .label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .summary-score .value{
+    font-size:40px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+  }
+  .summary-grade{
+    text-align:right;
+  }
+  .summary-grade .label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .grade-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:flex-end;
+    gap:10px;
+  }
+  .grade-letter{
+    font-size:26px;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .grade-meta{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  @media (max-width:520px){
+    body{padding:28px 14px;}
+    h1{font-size:23px;}
+    thead th:nth-child(2), thead th:nth-child(3){width:80px;}
+    .summary{flex-direction:column;align-items:flex-start;}
+    .summary-grade{text-align:left;}
+    .grade-row{justify-content:flex-start;}
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Simulasi Kalkulator Nilai Akhir & Konversi Huruf Mutu</h2>
-    <p style="text-align: center; color: #666; font-size: 14px;">Sesuaikan komponen, bobot (%), dan nilai untuk melihat hasil kalkulasi lengkap secara langsung.</p>
+<div class="wrap">
+  <header>
+    <h1>Kalkulator Nilai Akhir</h1>
+    <p>Atur komponen, bobot, dan nilai di bawah ini. Nilai akhir dan huruf mutu diperbarui secara otomatis.</p>
+  </header>
 
-    <table id="gradeTable">
-        <thead>
-            <tr>
-                <th style="width: 35%;">Komponen Penilaian</th>
-                <th style="width: 20%;">Bobot (%)</th>
-                <th style="width: 25%;">Nilai (0-100+)</th>
-                <th style="width: 20%; text-align: center;">Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <tr>
-                <td><input type="text" value="Aktivitas Partisipatif (Case Study)"></td>
-                <td><input type="number" class="weight" value="50" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="100" min="0" oninput="hitungTotal()"></td>
-                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
-            </tr>
-            <tr>
-                <td><input type="text" value="Ujian Tengah Semester"></td>
-                <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="73" min="0" oninput="hitungTotal()"></td>
-                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
-            </tr>
-            <tr>
-                <td><input type="text" value="Ujian Akhir Semester"></td>
-                <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="95" min="0" oninput="hitungTotal()"></td>
-                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
-            </tr>
-            <tr>
-                <td><input type="text" value="Kuis"></td>
-                <td><input type="number" class="weight" value="30" min="0" max="100" oninput="hitungTotal()"></td>
-                <td><input type="number" class="score" value="65" min="0" oninput="hitungTotal()"></td>
-                <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
-            </tr>
-        </tbody>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Komponen</th>
+          <th>Bobot (%)</th>
+          <th>Nilai</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr>
+          <td><input type="text" value="Aktivitas Partisipatif (Case Study)"></td>
+          <td><input type="number" class="weight" value="50" min="0" max="100" oninput="hitungTotal()"></td>
+          <td><input type="number" class="score" value="100" min="0" oninput="hitungTotal()"></td>
+          <td><button class="del" onclick="hapusBaris(this)" title="Hapus" aria-label="Hapus baris">&times;</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Ujian Tengah Semester"></td>
+          <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
+          <td><input type="number" class="score" value="73" min="0" oninput="hitungTotal()"></td>
+          <td><button class="del" onclick="hapusBaris(this)" title="Hapus" aria-label="Hapus baris">&times;</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Ujian Akhir Semester"></td>
+          <td><input type="number" class="weight" value="10" min="0" max="100" oninput="hitungTotal()"></td>
+          <td><input type="number" class="score" value="95" min="0" oninput="hitungTotal()"></td>
+          <td><button class="del" onclick="hapusBaris(this)" title="Hapus" aria-label="Hapus baris">&times;</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" value="Kuis"></td>
+          <td><input type="number" class="weight" value="30" min="0" max="100" oninput="hitungTotal()"></td>
+          <td><input type="number" class="score" value="65" min="0" oninput="hitungTotal()"></td>
+          <td><button class="del" onclick="hapusBaris(this)" title="Hapus" aria-label="Hapus baris">&times;</button></td>
+        </tr>
+      </tbody>
     </table>
-
-    <div class="actions">
-        <button class="btn" onclick="tambahBaris()">+ Tambah Komponen</button>
-        <div id="statusBobot"></div>
+    <div class="toolbar">
+      <button class="add-btn" onclick="tambahBaris()">+ Tambah komponen</button>
+      <div id="statusBobot"></div>
     </div>
+  </div>
 
-    <div class="summary-box">
-        <div class="summary-row">
-            <span>Total Nilai Akhir:</span>
-            <span id="finalScore" style="color: #007bff; font-size: 24px;">0.00</span>
-        </div>
-        <div class="summary-row" style="border-top: 1px solid #ccc; padding-top: 10px; font-size: 16px;">
-            <span>Predikat Huruf Mutu & Bobot:</span>
-            <div>
-                <span id="gradeLetter" class="grade-badge">-</span>
-                <span id="gradeDetail" style="margin-left: 10px; color: #555; font-weight: normal;">-</span>
-            </div>
-        </div>
+  <div class="summary">
+    <div class="summary-score">
+      <div class="label">NILAI AKHIR</div>
+      <div class="value" id="finalScore">0.00</div>
     </div>
+    <div class="summary-grade">
+      <div class="label">HURUF MUTU</div>
+      <div class="grade-row">
+        <span class="grade-letter" id="gradeLetter">–</span>
+        <span class="grade-meta" id="gradeDetail">–</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-    function getKonversiNilai(nilai) {
-        if (nilai >= 85) return { huruf: "A", bobot: "4,00", ket: "Sangat Baik / Istimewa" };
-        if (nilai >= 80) return { huruf: "A-", bobot: "3,70", ket: "" };
-        if (nilai >= 75) return { huruf: "B+", bobot: "3,30", ket: "" };
-        if (nilai >= 70) return { huruf: "B", bobot: "3,00", ket: "Baik" };
-        if (nilai >= 65) return { huruf: "B-", bobot: "2,70", ket: "" };
-        if (nilai >= 60) return { huruf: "C+", bobot: "2,30", ket: "" };
-        if (nilai >= 55) return { huruf: "C", bobot: "2,00", ket: "Cukup" };
-        if (nilai >= 40) return { huruf: "D", bobot: "1,00", ket: "Kurang" };
-        return { huruf: "E", bobot: "0,00", ket: "Gagal" };
+  function getKonversiNilai(nilai) {
+    if (nilai >= 85) return { huruf: "A", bobot: "4,00", ket: "Sangat Baik" };
+    if (nilai >= 80) return { huruf: "A-", bobot: "3,70", ket: "" };
+    if (nilai >= 75) return { huruf: "B+", bobot: "3,30", ket: "" };
+    if (nilai >= 70) return { huruf: "B", bobot: "3,00", ket: "Baik" };
+    if (nilai >= 65) return { huruf: "B-", bobot: "2,70", ket: "" };
+    if (nilai >= 60) return { huruf: "C+", bobot: "2,30", ket: "" };
+    if (nilai >= 55) return { huruf: "C", bobot: "2,00", ket: "Cukup" };
+    if (nilai >= 40) return { huruf: "D", bobot: "1,00", ket: "Kurang" };
+    return { huruf: "E", bobot: "0,00", ket: "Gagal" };
+  }
+
+  function hitungTotal() {
+    const rows = document.querySelectorAll("#tableBody tr");
+    let totalNilaiAkhir = 0;
+    let totalBobot = 0;
+
+    rows.forEach(row => {
+      const weight = parseFloat(row.querySelector(".weight").value) || 0;
+      const score = parseFloat(row.querySelector(".score").value) || 0;
+      totalBobot += weight;
+      totalNilaiAkhir += (weight / 100) * score;
+    });
+
+    document.getElementById("finalScore").innerText = totalNilaiAkhir.toFixed(2);
+
+    const hasil = getKonversiNilai(totalNilaiAkhir);
+    document.getElementById("gradeLetter").innerText = hasil.huruf;
+
+    let detailText = `Bobot ${hasil.bobot}`;
+    if (hasil.ket) detailText += ` · ${hasil.ket}`;
+    document.getElementById("gradeDetail").innerText = detailText;
+
+    const statusDiv = document.getElementById("statusBobot");
+    statusDiv.classList.remove("ok", "warn");
+    if (totalBobot === 100) {
+      statusDiv.textContent = `Total bobot ${totalBobot}%`;
+      statusDiv.classList.add("ok");
+    } else {
+      statusDiv.textContent = `Total bobot ${totalBobot}% — idealnya 100%`;
+      statusDiv.classList.add("warn");
     }
+  }
 
-    function hitungTotal() {
-        const rows = document.querySelectorAll("#tableBody tr");
-        let totalNilaiAkhir = 0;
-        let totalBobot = 0;
+  function tambahBaris() {
+    const tbody = document.getElementById("tableBody");
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td><input type="text" placeholder="Nama komponen"></td>
+      <td><input type="number" class="weight" value="0" min="0" max="100" oninput="hitungTotal()"></td>
+      <td><input type="number" class="score" value="0" min="0" oninput="hitungTotal()"></td>
+      <td><button class="del" onclick="hapusBaris(this)" title="Hapus" aria-label="Hapus baris">&times;</button></td>
+    `;
+    tbody.appendChild(newRow);
+    newRow.querySelector('input[type="text"]').focus();
+    hitungTotal();
+  }
 
-        rows.forEach(row => {
-            const weightInput = row.querySelector(".weight");
-            const scoreInput = row.querySelector(".score");
+  function hapusBaris(button) {
+    button.closest("tr").remove();
+    hitungTotal();
+  }
 
-            const weight = parseFloat(weightInput.value) || 0;
-            const score = parseFloat(scoreInput.value) || 0;
-
-            totalBobot += weight;
-            totalNilaiAkhir += (weight / 100) * score;
-        });
-
-        // Tampilkan total nilai akhir
-        document.getElementById("finalScore").innerText = totalNilaiAkhir.toFixed(2);
-
-        // Tentukan konversi huruf mutu dan bobot
-        const hasil = getKonversiNilai(totalNilaiAkhir);
-        document.getElementById("gradeLetter").innerText = hasil.huruf;
-        
-        let detailText = `Bobot ${hasil.bobot}`;
-        if (hasil.ket) {
-            detailText += ` (${hasil.ket})`;
-        }
-        document.getElementById("gradeDetail").innerText = detailText;
-
-        // Validasi status bobot
-        const statusDiv = document.getElementById("statusBobot");
-        if (totalBobot === 100) {
-            statusDiv.innerHTML = `<span class="success">Total Bobot: ${totalBobot}% (Pas)</span>`;
-        } else {
-            statusDiv.innerHTML = `<span class="warning">Total Bobot: ${totalBobot}% (Idealnya 100%)</span>`;
-        }
-    }
-
-    function tambahBaris() {
-        const tbody = document.getElementById("tableBody");
-        const newRow = document.createElement("tr");
-        newRow.innerHTML = `
-            <td><input type="text" placeholder="Nama Komponen Baru"></td>
-            <td><input type="number" class="weight" value="0" min="0" max="100" oninput="hitungTotal()"></td>
-            <td><input type="number" class="score" value="0" min="0" oninput="hitungTotal()"></td>
-            <td style="text-align: center;"><button class="btn btn-danger" onclick="hapusBaris(this)">Hapus</button></td>
-        `;
-        tbody.appendChild(newRow);
-        hitungTotal();
-    }
-
-    function hapusBaris(button) {
-        const row = button.closest("tr");
-        row.remove();
-        hitungTotal();
-    }
-
-    // Jalankan perhitungan awal saat halaman dimuat
-    window.onload = hitungTotal;
+  window.onload = hitungTotal;
 </script>
 
 </body>
